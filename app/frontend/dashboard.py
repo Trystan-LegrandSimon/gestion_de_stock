@@ -1,58 +1,14 @@
 # app/frontend/dashboard.py
-import sys
-from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPushButton, QTableWidget, QTableWidgetItem, QDialog, QFormLayout, QLabel, QLineEdit, QWidget
 
+from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPushButton, QTableWidget, QTableWidgetItem, QDialog, QFormLayout, QLabel, QLineEdit, QWidget
 from backend.backend import Backend
 
-
-class Dashboard(QDialog):
+class Dashboard(QMainWindow):
     
-    def __init__(self, parent=None):
-        super(Dashboard, self).__init__(parent)
-        self.setWindowTitle("Ajouter un produit")
+    def __init__(self, data_manager):
+        super(Dashboard, self).__init__()
 
-        self.name_label = QLabel("Nom:")
-        self.name_edit = QLineEdit()
-
-        self.description_label = QLabel("Description:")
-        self.description_edit = QLineEdit()
-
-        self.price_label = QLabel("Prix:")
-        self.price_edit = QLineEdit()
-
-        self.quantity_label = QLabel("Quantité:")
-        self.quantity_edit = QLineEdit()
-
-        self.category_label = QLabel("Catégorie:")
-        self.category_edit = QLineEdit()
-
-        self.addButton = QPushButton("Ajouter")
-        self.addButton.clicked.connect(self.accept)
-
-        layout = QFormLayout()
-        layout.addRow(self.name_label, self.name_edit)
-        layout.addRow(self.description_label, self.description_edit)
-        layout.addRow(self.price_label, self.price_edit)
-        layout.addRow(self.quantity_label, self.quantity_edit)
-        layout.addRow(self.category_label, self.category_edit)
-        layout.addRow(self.addButton)
-
-        self.setLayout(layout)
-
-    def get_product_data(self):
-        return {
-            'name': self.name_edit.text(),
-            'description': self.description_edit.text(),
-            'price': float(self.price_edit.text()),
-            'quantity': int(self.quantity_edit.text()),
-            'category': self.category_edit.text()
-        }
-
-
-class StockManagementApp(QMainWindow):
-    
-    def __init__(self):
-        super(StockManagementApp, self).__init__()
+        self.data_manager = data_manager
 
         self.setWindowTitle("Gestion des Stocks")
 
@@ -77,19 +33,41 @@ class StockManagementApp(QMainWindow):
 
         self.central_widget.setLayout(self.layout)
 
+        # Chargez les produits au démarrage de l'application
+        self.load_products_from_database()
+
+    def load_products_from_database(self):
+        # Obtenez tous les produits depuis la base de données
+        all_products = self.data_manager.get_all_products()
+
+        # Effacez toutes les lignes actuelles dans la table
+        self.product_table.setRowCount(0)
+
+        # Remplissez la table avec les données des produits
+        for row, product in enumerate(all_products):
+            self.product_table.insertRow(row)
+            for col, value in enumerate(product):
+                item = QTableWidgetItem(str(value))
+                self.product_table.setItem(row, col, item)
+
     def add_product(self):
         dialog = Dashboard(self)
         result = dialog.exec_()
 
         if result == QDialog.Accepted:
             product_data = dialog.get_product_data()
-            # Ajouter la logique pour insérer le produit dans la base de données
-            # Ici, nous ajoutons simplement le produit à la table pour l'exemple
-            row_position = self.product_table.rowCount()
-            self.product_table.insertRow(row_position)
-            for col, value in enumerate(product_data.values()):
-                item = QTableWidgetItem(str(value))
-                self.product_table.setItem(row_position, col, item)
+
+            # Ajoutez le produit à la base de données
+            self.data_manager.add_product(
+                product_data['name'],
+                product_data['description'],
+                product_data['price'],
+                product_data['quantity'],
+                product_data['category']
+            )
+
+            # Chargez à nouveau les produits depuis la base de données et mettez à jour le tableau
+            self.load_products_from_database()
 
     def delete_product(self):
         # Récupérez la ligne sélectionnée
@@ -101,8 +79,7 @@ class StockManagementApp(QMainWindow):
             product_id = int(self.product_table.item(selected_row, 0).text())
 
             # Utilisez la classe Backend pour supprimer le produit de la base de données
-            backend = Backend()
-            backend.remove_product(product_id)
+            self.data_manager.remove_product(product_id)
 
             # Chargez à nouveau les produits depuis la base de données et mettez à jour le tableau
             self.load_products_from_database()
