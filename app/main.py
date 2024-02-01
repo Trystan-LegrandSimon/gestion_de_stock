@@ -14,6 +14,6 @@ if __name__ == "__main__":
     # Passez l'instance de Backend lors de la création de StockManagementApp
     window = Dashboard(data_manager)
 
-    window.setGeometry(100, 100, 800, 600)
+    window.setGeometry(100, 100, 800, 700)
     window.show()
     sys.exit(app.exec())
