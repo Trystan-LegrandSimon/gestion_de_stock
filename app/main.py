@@ -2,7 +2,7 @@
 
 import sys
 from PySide6.QtWidgets import QApplication
-from frontend.dashboard import StockManagementApp
+from frontend.StockManagementApp import StockManagementApp
 from backend.backend import Backend
 
 if __name__ == "__main__":
