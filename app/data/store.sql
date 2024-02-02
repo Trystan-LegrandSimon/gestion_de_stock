@@ -26,3 +26,4 @@ DELETE FROM product WHERE id;
 
 -- Réinitialisez l'auto-incrémentation
 ALTER TABLE product AUTO_INCREMENT = 1;
+ALTER TABLE category AUTO_INCREMENT = 1;
