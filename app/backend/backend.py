@@ -33,11 +33,15 @@ class Backend:
         self.connection.commit()
 
     def get_all_products(self):
-        query = "SELECT * FROM product"
+        query = """
+            SELECT product.id, product.name, product.description, 
+                   product.price, product.quantity, category.name AS category
+            FROM product
+            JOIN category ON product.id_category = category.id
+        """
         self.cursor.execute(query)
         return self.cursor.fetchall()
 
     def close_connection(self):
-        # Fermez la connexion à la base de données lorsque vous avez terminé
         self.cursor.close()
         self.connection.close()
