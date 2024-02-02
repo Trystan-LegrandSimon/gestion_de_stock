@@ -5,7 +5,6 @@ import mysql.connector
 class Backend:
     
     def __init__(self):
-        # Connectez-vous à votre base de données MySQL (assurez-vous de remplacer les valeurs appropriées)
         self.connection = mysql.connector.connect(
             host="localhost",
             user="root",
