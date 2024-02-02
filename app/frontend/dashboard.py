@@ -1,7 +1,7 @@
 # app/frontend/dashboard.py
 
 from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPushButton, QTableWidget, QTableWidgetItem, QDialog, QFormLayout, QLabel, QLineEdit, QWidget, QSizePolicy
-from backend.backend import Backend
+from backend.Backend import Backend
 
 class Dashboard(QDialog):
     

@@ -1,8 +1,8 @@
 # app/frontend/dashboard.py
 
 from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPushButton, QTableWidget, QTableWidgetItem, QDialog, QFormLayout, QLabel, QLineEdit, QWidget, QSizePolicy
-from backend.backend import Backend
-from frontend.dashboard import Dashboard
+from backend.Backend import Backend
+from frontend.Dashboard import Dashboard
 
 class StockManagementApp(QMainWindow):
     
